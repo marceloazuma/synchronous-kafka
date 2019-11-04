@@ -4,6 +4,8 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +26,24 @@ public class CarController {
   @Autowired
   private CarFacade carFacade;
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(CarController.class);
+
   @GetMapping(value = "/car/{vin}",
       produces = {"application/se.callista.blog.synch_kafka.car+json"})
   public DeferredResult<ResponseEntity<Car>> getCar(@PathVariable("vin") String vin) {
+    LOGGER.info("CarController.getCar({})", vin);
     DeferredResult<ResponseEntity<Car>> result = new DeferredResult<>();
     CompletableFuture<Car> reply = carFacade.getCarAsync(vin);
-    reply.thenAccept(car ->
-      result.setResult(new ResponseEntity<>(car, HttpStatus.OK))
-    ).exceptionally(ex -> {
+    reply.thenAccept(car -> {
+      LOGGER.info("getCarAsync.thenAccept({})", car);
+      // try {
+      //   Thread.sleep(car.getWait());
+      // } catch (InterruptedException e) {
+      //   // TODO Auto-generated catch block
+      //   e.printStackTrace();
+      // }
+      result.setResult(new ResponseEntity<>(car, HttpStatus.OK));
+    }).exceptionally(ex -> {
       result.setErrorResult(new ApiException(HttpStatus.NOT_FOUND, ex.getCause().getMessage()));
       return null;
     });

@@ -1,0 +1,9 @@
+time curl http://localhost:8091/car/45678901234567890
+time curl http://localhost:8091/car/45678901234567890
+time curl http://localhost:8091/car/45678901234567890
+time curl http://localhost:8091/car/45678901234567890
+time curl http://localhost:8091/car/45678901234567890
+time curl http://localhost:8091/car/45678901234567890
+time curl http://localhost:8091/car/45678901234567890
+time curl http://localhost:8091/car/45678901234567890
+time curl http://localhost:8091/car/45678901234567890

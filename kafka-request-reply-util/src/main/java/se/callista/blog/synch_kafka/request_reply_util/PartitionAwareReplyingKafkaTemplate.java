@@ -3,6 +3,10 @@ package se.callista.blog.synch_kafka.request_reply_util;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.header.internals.RecordHeader;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.GenericMessageListenerContainer;
@@ -21,6 +25,8 @@ import org.springframework.lang.Nullable;
  */
 public class PartitionAwareReplyingKafkaTemplate<K, V, R> extends ReplyingKafkaTemplate<K, V, R> implements PartitionAwareReplyingKafkaOperations<K, V, R> {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(PartitionAwareReplyingKafkaTemplate.class);
+
   public PartitionAwareReplyingKafkaTemplate(ProducerFactory<K, V> producerFactory,
       GenericMessageListenerContainer<K, R> replyContainer) {
     super(producerFactory, replyContainer);
@@ -30,6 +36,7 @@ public class PartitionAwareReplyingKafkaTemplate<K, V, R> extends ReplyingKafkaT
     if (getAssignedReplyTopicPartitions() != null &&
         getAssignedReplyTopicPartitions().iterator().hasNext()) {
       TopicPartition replyPartition = getAssignedReplyTopicPartitions().iterator().next();
+      LOGGER.info("Using partition {} ", replyPartition.partition());
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Using partition " + replyPartition.partition());
       }
@@ -95,6 +102,7 @@ public class PartitionAwareReplyingKafkaTemplate<K, V, R> extends ReplyingKafkaT
   
   protected RequestReplyFuture<K, V, R> doSendAndReceive(ProducerRecord<K, V> record) {
     TopicPartition replyPartition = getFirstAssignedReplyTopicPartition();
+    LOGGER.info("doSendAndReceive -- Using partition {} ", replyPartition.partition());
     record.headers()
         .add(new RecordHeader(KafkaHeaders.REPLY_TOPIC, replyPartition.topic().getBytes()))
         .add(new RecordHeader(KafkaHeaders.REPLY_PARTITION,

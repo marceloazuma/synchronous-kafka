@@ -6,6 +6,8 @@ Kafka
 
 Topics
 
+`docker-compose exec broker kafka-topics --zookeeper zookeeper:2181 --create --replication-factor 1 --partitions 3 --topic car.reply`
+
 `docker-compose exec broker kafka-topics --zookeeper zookeeper:2181 --create --replication-factor 1 --partitions 3 --topic car.request`
 
 `docker-compose exec broker kafka-topics --zookeeper zookeeper:2181 --list`
@@ -14,14 +16,27 @@ Topics
 
 `docker-compose exec broker kafka-topics --zookeeper zookeeper:2181 --alter --topic car.request --partitions 3`
 
+`docker-compose exec broker kafka-topics --zookeeper zookeeper:2181 --alter --topic car.reply --partitions 3`
+
+Build libs
+
+`mvn install`
 
 Run car
 
 `mvn -pl car spring-boot:run -Dspring-boot.run.arguments="--server.port=8189"`
 
+`mvn -pl car spring-boot:run -Dspring-boot.run.arguments="--server.port=8190"`
+
+`mvn -pl car spring-boot:run -Dspring-boot.run.arguments="--server.port=8191"`
+
 Run car-client
 
-`mvn -pl car-client spring-boot:run`
+`mvn -pl car-client spring-boot:run -Dspring-boot.run.arguments="--server.port=8089,--spring.kafka.consumer.group-id=0,--kafka.topic.car.reply.partition=0"`
+
+`mvn -pl car-client spring-boot:run -Dspring-boot.run.arguments="--server.port=8090,--spring.kafka.consumer.group-id=1,--kafka.topic.car.reply.partition=1"`
+
+`mvn -pl car-client spring-boot:run -Dspring-boot.run.arguments="--server.port=8091,--spring.kafka.consumer.group-id=2,--kafka.topic.car.reply.partition=2"`
 
 Tests
 

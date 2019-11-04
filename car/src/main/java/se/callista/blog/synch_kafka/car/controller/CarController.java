@@ -15,12 +15,13 @@ public class CarController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CarController.class);
 
-  @KafkaListener(topics = "${kafka.topic.car.request}", containerFactory = "requestReplyListenerContainerFactory")
+  @KafkaListener(topics = "${kafka.topic.car.request}", containerFactory = "requestReplyListenerContainerFactory", concurrency="10") 
   @SendTo()
   public Car receive(String vin) {
     LOGGER.info("received request for VIN {} ", vin);
     Car car = repository.getCar(vin);
     try {
+      LOGGER.info("Thread.sleep({})", car.getWait());
       Thread.sleep(car.getWait());
     } catch (InterruptedException e) {
       // TODO Auto-generated catch block
