@@ -32,11 +32,11 @@ Run car
 
 Run car-client
 
-`mvn -pl car-client spring-boot:run -Dspring-boot.run.arguments="--server.port=8089,--spring.kafka.consumer.group-id=0,--kafka.topic.car.reply.partition=0"`
+`mvn -pl car-client spring-boot:run -Dspring-boot.run.arguments="--server.port=8089"`
 
-`mvn -pl car-client spring-boot:run -Dspring-boot.run.arguments="--server.port=8090,--spring.kafka.consumer.group-id=1,--kafka.topic.car.reply.partition=1"`
+`mvn -pl car-client spring-boot:run -Dspring-boot.run.arguments="--server.port=8090"`
 
-`mvn -pl car-client spring-boot:run -Dspring-boot.run.arguments="--server.port=8091,--spring.kafka.consumer.group-id=2,--kafka.topic.car.reply.partition=2"`
+`mvn -pl car-client spring-boot:run -Dspring-boot.run.arguments="--server.port=8091"`
 
 Tests
 
